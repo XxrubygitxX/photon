@@ -10,7 +10,6 @@
 #include <filesystem>
 #include "window.h"
 #include "shader.h"
-#include "camera.h"
 
 
 
@@ -24,8 +23,6 @@ class CGraphicsSystem
     public:
 
         CWindow* m_Window;
-
-        CCamera* m_Camera;
 
         int Initialize(const windowparameters_t& p_WindowParameters);
         void Release();
