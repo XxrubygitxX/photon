@@ -10,6 +10,7 @@
 #include <filesystem>
 #include "window.h"
 #include "shader.h"
+#include "camera.h"
 
 
 
