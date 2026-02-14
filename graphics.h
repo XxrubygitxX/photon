@@ -31,6 +31,8 @@ class CGraphicsSystem
         void Update();
         void Clear();
 
+        void SetupProjection(unsigned int p_Shader);
+
         explicit CGraphicsSystem();
         virtual ~CGraphicsSystem();
 

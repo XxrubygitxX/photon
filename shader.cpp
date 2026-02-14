@@ -17,6 +17,7 @@
 #endif
 
 
+/* This entire function is absolutely horrible */
 std::filesystem::path GetExecutableDir()
 {
 
