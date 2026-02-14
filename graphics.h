@@ -16,7 +16,7 @@
 
 
 
-extern std::filesystem::path GetExecutableDir();
+
 
 class CGraphicsSystem
 {
