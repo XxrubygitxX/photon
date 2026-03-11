@@ -10,6 +10,12 @@
 
 
 
+
+glm::vec3 g_CameraPosition;
+glm::vec3 g_CameraRotation;
+glm::vec3 g_CameraFront;
+glm::vec3 g_CameraUp;
+
 CGraphicsSystem::CGraphicsSystem()
 {
 
@@ -70,13 +76,12 @@ void CGraphicsSystem::SetupProjection(unsigned int p_Shader)
 {
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     glm::mat4 view = glm::mat4(1.0f);
-    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::lookAt(g_CameraPosition, g_CameraPosition + g_CameraFront, g_CameraUp);
 
     glm::mat4 projection;
-    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100000.0f);
 
     int model_location = glGetUniformLocation(p_Shader, "model");
     glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(model));

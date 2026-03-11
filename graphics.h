@@ -5,16 +5,28 @@
 
 
 
+
 #include <iostream>
 #include <vector>
 #include <filesystem>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include "window.h"
 #include "shader.h"
 #include "camera.h"
+#include "image.h"
 
 
 
 
+
+extern glm::vec3 g_CameraPosition;
+extern glm::vec3 g_CameraRotation;
+extern glm::vec3 g_CameraFront;
+extern glm::vec3 g_CameraUp;
+
+extern std::filesystem::path GetExecutableDir();
 
 
 

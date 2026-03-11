@@ -57,6 +57,7 @@ class CWindow
         bool m_Fullscreen;
         bool m_Active;
         int m_BufferSize;
+        
 
 };
 

@@ -6,14 +6,19 @@
 
 
 
-#include "opengl.h"
+#include "graphics.h"
 
-typedef struct camera_t
+class CCamera
 {
 
-    Vector3 position;
-    Vector3 direction;
+    public:
 
-} camera_t;
+
+        
+
+        explicit CCamera();
+        virtual ~CCamera();
+
+};
 
 #endif

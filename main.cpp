@@ -5,14 +5,12 @@
 
 
 
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+
+
+#include <iostream>
+#include <filesystem>
 #include "opengl.h"
 #include "graphics.h"
-
 
 
 
@@ -27,10 +25,10 @@ int main()
 {
 
     float vertices[] = {
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f
+     1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f,
+     1.0f, -1.0f, 0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f,
+    -1.0f,  1.0f, 0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f
     };
 
     unsigned int indices[] = {
@@ -115,11 +113,7 @@ int main()
 
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    int width;
-    int height;
-    int channels;
-
-    unsigned char* image = stbi_load((GetExecutableDir() / "texture.jpg").string().c_str(), &width, &height, &channels, 0);
+    CImage* image = new CImage("texture.jpg");
 
     unsigned int texture;
 
@@ -132,7 +126,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->GetInfo().width, image->GetInfo().height, 0, GL_RGB, GL_UNSIGNED_BYTE, image->GetImage());
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -140,6 +134,21 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+
+    g_CameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+    g_CameraRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+    g_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    g_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    const unsigned char* keyboard;
+    
+    long long current = SDL_GetPerformanceCounter();
+    long long last = 0;
+    float delta_time;
+
+    float speed = 0.1f;
+
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     SDL_Event event;
 
@@ -165,6 +174,41 @@ int main()
             
         }
 
+        last = current;
+        current = SDL_GetPerformanceCounter();
+
+        delta_time = (float) ((current - last) * 1000 / (float) SDL_GetPerformanceFrequency());
+
+        keyboard = SDL_GetKeyboardState(NULL);
+
+        if (keyboard[SDL_SCANCODE_W])
+        {
+
+            g_CameraPosition += g_CameraFront * speed * delta_time;
+
+        }
+
+        if (keyboard[SDL_SCANCODE_S])
+        {
+
+            g_CameraPosition += -g_CameraFront * speed * delta_time;
+
+        }
+
+        if (keyboard[SDL_SCANCODE_A])
+        {
+
+            g_CameraPosition += glm::normalize(glm::cross(g_CameraUp, g_CameraFront)) * speed * delta_time;
+
+        }
+
+        if (keyboard[SDL_SCANCODE_D])
+        {
+
+            g_CameraPosition += -glm::normalize(glm::cross(g_CameraUp, g_CameraFront)) * speed * delta_time;
+
+        }
+
         g_GraphicsSystem->SetupProjection(shader->m_ShaderProgram);
 
         glUseProgram(shader->m_ShaderProgram);
@@ -181,7 +225,8 @@ int main()
 
     }
 
-    stbi_image_free(image);
+    delete image;
+    image = nullptr;
 
     delete shader;
     shader = nullptr;
